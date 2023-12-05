@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=|, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #stopwatch {
+            font-size: 48px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #controls {
+            text-align: center;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #laps {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .lap-item {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="stopwatch">00:00:00</div>
+    <div id="controls">
+        <button id="startStop" onclick="startStop()">Start</button>
+        <button id="reset" onclick="reset()">Reset</button>
+        <button id="lap" onclick="lap()">Lap</button>
+    </div>
+    <div id="laps">
+        <h2>Lap Times</h2>
+    </div>
+
+    <script>
+        let running = false;
+        let startTime = 0;
+        let interval;
+        let laps = [];
+        const stopwatch = document.getElementById("stopwatch");
+        const startStopButton = document.getElementById("startStop");
+        const lapButton = document.getElementById("lap");
+        const resetButton = document.getElementById("reset");
+        const lapsList = document.getElementById("laps");
+
+        function startStop() {
+            if (running) {
+                clearInterval(interval);
+                running = false;
+                startStopButton.textContent = "Start";
+            } else {
+                startTime = Date.now() - (startTime > 0 ? startTime : 0);
+                interval = setInterval(updateStopwatch, 10);
+                running = true;
+                startStopButton.textContent = "Stop";
+            }
+        }
+
+        function reset() {
+            clearInterval(interval);
+            running = false;
+            startTime = 0;
+            updateStopwatch();
+            startStopButton.textContent = "Start";
+            laps = [];
+            lapsList.innerHTML = "";
+        }
+
+        function lap() {
+    if (running) {
+        const currentTime = Date.now();
+        const lapTime = currentTime - startTime;
+        
+        laps.push(lapTime);
+        const lapNumber = laps.length;
+        const lapText = `${lapNumber}. Lap: ${formatTime(lapTime)}`;
+        lapsList.innerHTML += `<div class="lap-item">${lapText}</div>`;
+    }
+}
+
+
+        function updateStopwatch() {
+            const currentTime = Date.now() - startTime;
+            stopwatch.textContent = formatTime(currentTime);
+        }
+
+        function formatTime(ms) {
+            const date = new Date(ms);
+            return date.toISOString().substr(11, 8);
+        }
+    </script>
+</body>
+</html>
